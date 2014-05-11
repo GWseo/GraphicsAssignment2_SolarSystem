@@ -122,6 +122,7 @@
                 case 4://B->R
                     blue-=colorIncrment;
                     red+=colorIncrment;
+                    break;
                 case 5://B->G
                     blue-=colorIncrment;
                     green+=colorIncrment;
