@@ -133,7 +133,6 @@
         }
     }
     
-    NSLog(@"%p %p.",m_ColorData,m_VertexData);
     return self;
 }
 

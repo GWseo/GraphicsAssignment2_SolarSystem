@@ -23,21 +23,21 @@
                                     <accessibilityTraits key="traits" none="YES"/>
                                 </accessibility>
                                 <connections>
-                                    <action selector="CameraSpeedScroll:" destination="p1e-r0-bp7" eventType="valueChanged" id="Btc-yh-uHY"/>
+                                    <action selector="CameaSpeedScroll:" destination="p1e-r0-bp7" eventType="valueChanged" id="sAH-IE-ZWF"/>
                                 </connections>
                             </slider>
                             <slider opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="1" minValue="0.5" maxValue="2" translatesAutoresizingMaskIntoConstraints="NO" id="SSr-XU-i5s" userLabel="Pluto">
                                 <rect key="frame" x="18" y="58" width="84" height="31"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <connections>
-                                    <action selector="EarthSpeeldScroll:" destination="p1e-r0-bp7" eventType="valueChanged" id="sWv-XJ-ihZ"/>
+                                    <action selector="PlutoSpeedScroll:" destination="p1e-r0-bp7" eventType="valueChanged" id="Nei-J1-AIg"/>
                                 </connections>
                             </slider>
                             <slider opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="1" minValue="0.5" maxValue="2" translatesAutoresizingMaskIntoConstraints="NO" id="deB-B3-uRc" userLabel="Earth">
                                 <rect key="frame" x="18" y="20" width="84" height="31"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <connections>
-                                    <action selector="PlutoSpeedScroll:" destination="p1e-r0-bp7" eventType="valueChanged" id="VOS-VH-JNz"/>
+                                    <action selector="EarthSpeedScroll:" destination="p1e-r0-bp7" eventType="valueChanged" id="HbD-Jt-N6s"/>
                                 </connections>
                             </slider>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rxo-DC-TIY">

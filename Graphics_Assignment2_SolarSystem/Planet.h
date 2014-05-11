@@ -19,9 +19,7 @@ typedef struct{
 @interface Planet : NSObject
 {
 @private
-    Vertex *m_VertexData;
-    GLubyte *m_ColorData;
-    
+    Vertex *m_VertexData;    
     GLint m_Stacks, m_Slices;
     GLfloat m_Scale;
     GLfloat m_Squash;
