@@ -26,7 +26,6 @@
     float _plutoY;
     float _earthR;
     float _plutoR;
-
     
     float _sunViewR;
     float _earthViewR;
@@ -140,7 +139,7 @@
     [EAGLContext setCurrentContext:self.context];
     stack = 10;
     slice = 10;
-    Sun     = [[Planet alloc]init:stack slices:slice radius:_sunViewR squash:1.0 ColorMode:1];
+    Sun     = [[Planet alloc]init:stack slices:slice radius:_sunViewR squash:0.01 ColorMode:1];
     Earth   = [[Planet alloc]init:stack slices:slice radius:_earthViewR squash:1.0 ColorMode:0];
     Pluto   = [[Planet alloc]init:stack slices:slice radius:_plutoViewR squash:1.0 ColorMode:3];
     Satellite  = [[Planet alloc]init:stack slices:slice radius:_satelliteViewR squash:1.0 ColorMode:2];

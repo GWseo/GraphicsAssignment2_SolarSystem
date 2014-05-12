@@ -11,7 +11,6 @@
 @implementation Planet
 
 -(id)init:(GLint)stacks slices:(GLint)slices radius:(GLfloat)radius squash:(GLfloat)squash ColorMode:(int)_mode{
-    //unsigned int colorIncrment = 0;
     float colorIncrment = 0;
     float blue = 0.0;
     float red = 0.0;
@@ -44,48 +43,38 @@
         m_VertexData = nil;
         
         //Vertices
-        Vertex *vPtr = m_VertexData = (Vertex*)malloc(sizeof(Vertex) *((m_Slices * 2 + 2) * (m_Stacks)));    //3
+        Vertex *vPtr = m_VertexData = (Vertex*)malloc(sizeof(Vertex) *((m_Slices * 2 + 2) * (m_Stacks)));
         
-        //Color data
         NSLog(@"%p %p.",vPtr,m_VertexData);
-        //GLubyte *cPtr = m_ColorData = (GLubyte*)malloc(sizeof(GLubyte)* 4* ((m_Slices * 2 + 2) * (m_Stacks)));  //4
         
         unsigned int phiIdx, thetaIdx;
         
         //latitude
-        
-        for(phiIdx = 0; phiIdx < m_Stacks; phiIdx++){   //5
-            //Starts at -1.57 goes up to +1.57 radians.
+        for(phiIdx = 0; phiIdx < m_Stacks; phiIdx++){
             //the first circle.
             
-            float phi0 = M_PI*((float)(phiIdx + 0)*(1.0/(float)(m_Stacks))-0.5);   //6
+            float phi0 = M_PI*((float)(phiIdx + 0)*(1.0/(float)(m_Stacks))-0.5);
             //the next, or second one.
             
-            float phi1 = M_PI*((float)(phiIdx + 1)*(1.0/(float)(m_Stacks))-0.5);    //7
-            float cosPhi0 = cos(phi0);  //8
+            float phi1 = M_PI*((float)(phiIdx + 1)*(1.0/(float)(m_Stacks))-0.5);
+            float cosPhi0 = cos(phi0);
             float sinPhi0 = sin(phi0);
             float cosPhi1 = cos(phi1);
             float sinPhi1 = sin(phi1);
             
             float cosTheta, sinTheta;
-            
             //longitude
             
-            for(thetaIdx = 0 ; thetaIdx<m_Slices;thetaIdx++ ){  //9
+            for(thetaIdx = 0 ; thetaIdx<m_Slices;thetaIdx++ ){
                 //Increment along the longitude circle each "slice."
                 float theta = 2.0*M_PI *((float)thetaIdx)* (1.0/(float)(m_Slices - 1));
                 cosTheta = cos(theta);
                 sinTheta = sin(theta);
                 
-                //we'r generating a vertical pair of points, such as the first point of stack 0 and the first point of stack 1 above it.
-                //this is how TRIANGLE_STRIPS work,
-                // thaking a set of 4 vertices and essentially drawing two triangles at a time. The first is v0-v1-v2 and the next is v2-v1-v3, and so on.
-                //Get x-y-z for the first vertex of stack.
-                vPtr[0].Positions[0] = m_Scale*cosPhi0*cosTheta;     //10
+                vPtr[0].Positions[0] = m_Scale*cosPhi0*cosTheta;
                 vPtr[0].Positions[1] = m_Scale*sinPhi0*m_Squash;
                 vPtr[0].Positions[2] = m_Scale*cosPhi0*sinTheta;
-                
-                //the same but for the vertex immediately above the previous one.
+
                 vPtr[1].Positions[0] = m_Scale*cosPhi1*cosTheta;
                 vPtr[1].Positions[1] = m_Scale*sinPhi1*m_Squash;
                 vPtr[1].Positions[2] = m_Scale*cosPhi1*sinTheta;
