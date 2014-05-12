@@ -28,6 +28,8 @@
     float _earthR;
     float _plutoR;
     
+    bool shift;
+    
     Planet* Sun;
     Planet* Earth;
     Planet* Satellite;
@@ -307,15 +309,24 @@
     float z = sqrtf(x*x+y*y);
     float Theta =GLKMathRadiansToDegrees(asinf(y/z));
     //if (Theta<=0) Theta*=-1;
+    if(shift && (Theta <= -89.8)){
+        shift = NO;
+    }
+    if(!shift && (Theta >= 89.8)){
+        shift = YES;
+    }
+    if (shift) {
+        Theta = 180.0 - Theta;
+    }
     
-    //Theta = GLKMathRadiansToDegrees(PlutoRadian) - Theta;
+    NSLog(@"x : %f, y : %f ,sin(P):%f  cos(P):%f Theta: %f",x, y,PlutoDegree, PlutoRadian, Theta);
+    Theta = GLKMathRadiansToDegrees(PlutoRadian) - Theta;
     
-     NSLog(@"x : %f, y : %f ,sin(P):%f  cos(P):%f Theta: %f",x, y,PlutoDegree, PlutoRadian, Theta);
-    BaseMatrix = GLKMatrix4Rotate(BaseMatrix,GLKMathDegreesToRadians(-Theta), 0.0, 1.0, 0.0);
+    BaseMatrix = GLKMatrix4Rotate(BaseMatrix,GLKMathDegreesToRadians(Theta), 0.0, 1.0, 0.0);
 
-    //BaseMatrix = GLKMatrix4Translate(BaseMatrix, 0.0, 0.0,-R);
-    //BaseMatrix = GLKMatrix4Rotate(BaseMatrix, PlutoRadian, 0.0, -1.0, 0.0);
-    BaseMatrix = GLKMatrix4Translate(BaseMatrix, -sqrtf(_plutoY)*sinf(PlutoRadian), 0.0,-sqrtf(_plutoX)*cosf(PlutoRadian));
+    BaseMatrix = GLKMatrix4Translate(BaseMatrix, 0.0, 0.0,-R);
+    BaseMatrix = GLKMatrix4Rotate(BaseMatrix, PlutoRadian, 0.0, -1.0, 0.0);
+    //BaseMatrix = GLKMatrix4Translate(BaseMatrix, -sqrtf(_plutoY)*sinf(PlutoRadian), 0.0,-sqrtf(_plutoX)*cosf(PlutoRadian));
     // -
     GLKMatrix4 projectionMatrix = GLKMatrix4MakePerspective(GLKMathDegreesToRadians(65.0f), aspect, 0.1f, 300.0f);
     projectionMatrix = GLKMatrix4Multiply(projectionMatrix, BaseMatrix);
