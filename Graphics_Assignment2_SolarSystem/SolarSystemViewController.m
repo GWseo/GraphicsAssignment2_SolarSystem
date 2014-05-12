@@ -138,8 +138,8 @@
 - (void)setupGL{
     NSLog(@"setupGL");
     [EAGLContext setCurrentContext:self.context];
-    stack = 50;
-    slice = 50;
+    stack = 10;
+    slice = 10;
     Sun     = [[Planet alloc]init:stack slices:slice radius:_sunViewR squash:1.0 ColorMode:1];
     Earth   = [[Planet alloc]init:stack slices:slice radius:_earthViewR squash:1.0 ColorMode:0];
     Pluto   = [[Planet alloc]init:stack slices:slice radius:_plutoViewR squash:1.0 ColorMode:3];
@@ -223,7 +223,7 @@
     glVertexAttribPointer(GLKVertexAttribPosition, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)offsetof(Vertex, Positions));
     glEnableVertexAttribArray(GLKVertexAttribColor);
     glVertexAttribPointer(GLKVertexAttribColor, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)offsetof(Vertex, Color));
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, ((slice+1)*2*(stack-1)+2));
+    glDrawArrays(GL_LINE_STRIP, 0, ((slice+1)*2*(stack-1)+2));
     
     
     //Draw Axis
@@ -276,7 +276,7 @@
     [self.effect prepareToDraw];
     glBindBuffer(GL_ARRAY_BUFFER, _SatelliteVertexBuffer);
     [self execute:satelliteModelViewMatrix];
-    float PlutoDegree = GLKMathDegreesToRadians((_rotation)*_PlutoRotation/4+90);
+    float PlutoDegree = GLKMathDegreesToRadians((_rotation)*_PlutoRotation/3+90);
     // pluto must allways look at earth center...? how???
     float R = sqrtf((_plutoX*cosf(PlutoDegree)*cosf(PlutoDegree))+_plutoY*sinf(PlutoDegree)*sinf(PlutoDegree));
     
