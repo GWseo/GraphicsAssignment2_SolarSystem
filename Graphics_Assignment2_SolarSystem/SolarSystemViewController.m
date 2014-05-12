@@ -23,6 +23,11 @@
     float _SatelliteRotation;
     float _SatelliteRevolution;
     
+    float _plutoX;
+    float _plutoY;
+    float _earthR;
+    float _plutoR;
+    
     Planet* Sun;
     Planet* Earth;
     Planet* Satellite;
@@ -85,6 +90,8 @@
     _PlutoRotation = 1.0;
     _SatelliteRotation = 1.0;
     _SatelliteRevolution = 0.0;
+    _plutoX = 400;
+    _plutoY = 256;
     [self setupGL];
 }
 
@@ -152,7 +159,6 @@
 -(void)update{
     _rotation += 25*self.timeSinceLastUpdate;
     _SatelliteRevolution += 30*self.timeSinceLastUpdate;
-    //NSLog(@"1234");
 }
 
 #pragma mark - GLKViewDelegate
@@ -189,7 +195,7 @@
             [self CameraView];
             break;
         default:
-            [self SunView];
+            NSLog(@"Error haha");
             break;
     }
     
@@ -200,6 +206,7 @@
     glEnableVertexAttribArray(GLKVertexAttribColor);
     glVertexAttribPointer(GLKVertexAttribColor, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)offsetof(Vertex, Color));
     glDrawArrays(GL_LINE_STRIP, 0, ((slice+1)*2*(stack-1)+2));
+    //Draw Axis
     
 }
 -(void)buildUniverse{
@@ -216,7 +223,7 @@
     glBindBuffer(GL_ARRAY_BUFFER, _SunVertexBuffer);
     [self execute];
     
-    earthModelViewMatrix = GLKMatrix4Rotate(baseMatrix, GLKMathDegreesToRadians(_rotation*_EarthRotation), 0.0, -1.0, 0.0);
+    earthModelViewMatrix = GLKMatrix4Rotate(baseMatrix, GLKMathDegreesToRadians(_rotation*_EarthRotation), 0.0, 1.0, 0.0);
     earthModelViewMatrix = GLKMatrix4Translate(earthModelViewMatrix, 0.0, 0.0, 10.0f);
     earthModelViewMatrix = GLKMatrix4Rotate(earthModelViewMatrix, GLKMathDegreesToRadians(-15), 0.0, 0.0, 1.0);
     
@@ -238,9 +245,13 @@
     [self.effect prepareToDraw];
     glBindBuffer(GL_ARRAY_BUFFER, _SatelliteVertexBuffer);
     [self execute];
+    float PlutoDegree = GLKMathDegreesToRadians(_rotation*_PlutoRotation/4);
+    // pluto must allways look at earth center...? how???
+    float R = sqrtf((_plutoX*cosf(PlutoDegree)*cosf(PlutoDegree))+_plutoY*sinf(PlutoDegree)*sinf(PlutoDegree));
+    plutoModelViewMatrix = GLKMatrix4Rotate(baseMatrix, PlutoDegree, 0.0, 1.0, 0.0);
+    plutoModelViewMatrix = GLKMatrix4Translate(plutoModelViewMatrix, 0.0, 0.0, R);
+    //plutoModelViewMatrix = GLKMatrix4Translate(baseMatrix, 20*cosf(GLKMathDegreesToRadians(_rotation*_PlutoRotation/4)), 0.0,15*sinf(GLKMathDegreesToRadians(_rotation*_PlutoRotation/4)));
     
-    plutoModelViewMatrix = GLKMatrix4Rotate(baseMatrix, GLKMathDegreesToRadians(180), 0.0, -1.0, 0.0);
-    plutoModelViewMatrix = GLKMatrix4Translate(plutoModelViewMatrix, -20*cosf(GLKMathDegreesToRadians(_rotation*_PlutoRotation/4)), 0.0,-15*sinf(GLKMathDegreesToRadians(_rotation*_PlutoRotation/4)));
     self.effect.transform.modelviewMatrix = plutoModelViewMatrix;
     
     [self.effect prepareToDraw];
@@ -250,7 +261,7 @@
 }
 -(void)SunView{
     float aspect = fabsf(self.view.bounds.size.width/self.view.bounds.size.height);
-    GLKMatrix4 projectionMatrix = GLKMatrix4MakePerspective(GLKMathDegreesToRadians(65.0f), aspect, 0.1f, 300.0f);
+    GLKMatrix4 projectionMatrix = GLKMatrix4MakePerspective(GLKMathDegreesToRadians(65.0f), aspect, 2.0f, 300.0f);
    
     self.effect.transform.projectionMatrix = projectionMatrix;
     [self buildUniverse];
@@ -259,12 +270,17 @@
 
 -(void)EarthView{
     float aspect = fabsf(self.view.bounds.size.width/self.view.bounds.size.height);
+    
+    //View Must be Multiply as Stack wise
     GLKMatrix4 BaseMatrix = GLKMatrix4MakeTranslation(0.0f, 0.0f, 0.0f);
-    BaseMatrix = GLKMatrix4Rotate(BaseMatrix, GLKMathDegreesToRadians( _rotation*_EarthRotation*4), 0.0, -1.0, 0.0);
+    //
+    ////// need to apply korean coordinate
+    //
+    BaseMatrix = GLKMatrix4Rotate(BaseMatrix, GLKMathDegreesToRadians( _rotation*_EarthRotation), 0.0, -1.0, 0.0);
     BaseMatrix = GLKMatrix4Rotate(BaseMatrix, GLKMathDegreesToRadians(15), 0.0, 0.0, 1.0);
     BaseMatrix = GLKMatrix4Translate(BaseMatrix, 0.0, 0.0, -10.0f);
     
-    BaseMatrix = GLKMatrix4Rotate(BaseMatrix, GLKMathDegreesToRadians(_rotation*_EarthRotation), 0.0, 1.0, 0.0);
+    BaseMatrix = GLKMatrix4Rotate(BaseMatrix, GLKMathDegreesToRadians(_rotation*_EarthRotation), 0.0, -1.0, 0.0);
     
     GLKMatrix4 projectionMatrix = GLKMatrix4MakePerspective(GLKMathDegreesToRadians(65.0f), aspect, 1.0f, 300.0f);
     
@@ -275,7 +291,34 @@
     
 }
 -(void)PlutoView{
+    float aspect = fabsf(self.view.bounds.size.width/self.view.bounds.size.height);
+    GLKMatrix4 BaseMatrix = GLKMatrix4MakeTranslation(0.0f, 0.0f, 0.0f);
+    float PlutoDegree = (_rotation*_PlutoRotation/4);
+    float EarthDegree = (_rotation*_EarthRotation);
+    float PlutoRadian = GLKMathDegreesToRadians(PlutoDegree);
+    float EarthRadian = GLKMathDegreesToRadians(EarthDegree);
+    // pluto must allways look at earth center...? how???
+    float R = sqrtf((_plutoX*cosf(PlutoRadian)*cosf(PlutoRadian))+_plutoY*sinf(PlutoRadian)*sinf(PlutoRadian));
+    float r = sqrtf(100*cosf(EarthRadian)*cosf(EarthRadian)+100*sinf(EarthRadian)*sinf(EarthRadian));
+
+    //float Theta = GLKMathRadiansToDegrees( atanf((R*cosf(PlutoDegree)-r*cosf(EarthDegree))/(R*sinf(PlutoDegree)-r*sinf(EarthDegree))));
+    float x = R*cosf(PlutoRadian)-r*cosf(EarthRadian);
+    float y = R*sinf(PlutoRadian)-r*sinf(EarthRadian);
+    float z = sqrtf(x*x+y*y);
+    float Theta =GLKMathRadiansToDegrees(asinf(y/z));
     
+   
+    Theta = GLKMathRadiansToDegrees(PlutoRadian) - GLKMathRadiansToDegrees(asinf(y/z));
+     NSLog(@"x : %f, y : %f ,sin(P):%f  cos(P):%f Theta: %f",x, y,PlutoDegree, PlutoRadian, GLKMathRadiansToDegrees(asinf(y/z)));
+    BaseMatrix = GLKMatrix4Rotate(BaseMatrix,GLKMathDegreesToRadians(Theta), 0.0, 1.0, 0.0);
+
+    BaseMatrix = GLKMatrix4Translate(BaseMatrix, 0.0, 0.0,-R);
+    BaseMatrix = GLKMatrix4Rotate(BaseMatrix, PlutoRadian, 0.0, -1.0, 0.0);
+    //BaseMatrix = GLKMatrix4Translate(BaseMatrix, _plutoX*cosf(PlutoDegree), 0.0, _plutoY*sinf(PlutoDegree));
+    GLKMatrix4 projectionMatrix = GLKMatrix4MakePerspective(GLKMathDegreesToRadians(65.0f), aspect, 0.1f, 300.0f);
+    projectionMatrix = GLKMatrix4Multiply(projectionMatrix, BaseMatrix);
+    self.effect.transform.projectionMatrix = projectionMatrix;
+    [self buildUniverse];
 }
 -(void)CameraView{
     float aspect = fabsf(self.view.bounds.size.width/self.view.bounds.size.height);
