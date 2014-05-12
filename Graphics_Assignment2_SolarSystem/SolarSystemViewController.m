@@ -92,8 +92,9 @@
     _PlutoRotation = 1.0;
     _SatelliteRotation = 1.0;
     _SatelliteRevolution = 0.0;
-    _plutoX = 400;
-    _plutoY = 256;
+    _plutoX = 1600;
+    _plutoY = 900;
+    _earthR = 400;
     [self setupGL];
 }
 
@@ -224,14 +225,16 @@
     [self.effect prepareToDraw];
     glBindBuffer(GL_ARRAY_BUFFER, _SunVertexBuffer);
     [self execute];
+    earthModelViewMatrix = baseMatrix;
+    //earthModelViewMatrix = GLKMatrix4Rotate(earthModelViewMatrix, GLKMathDegreesToRadians(180), 0.0, 1.0, 0.0);
     
-    earthModelViewMatrix = GLKMatrix4Rotate(baseMatrix, GLKMathDegreesToRadians(_rotation*_EarthRotation), 0.0, 1.0, 0.0);
-    earthModelViewMatrix = GLKMatrix4Translate(earthModelViewMatrix, 0.0, 0.0, 10.0f);
+    earthModelViewMatrix = GLKMatrix4Rotate(earthModelViewMatrix, GLKMathDegreesToRadians((_rotation)*_EarthRotation+180), 0.0, 1.0, 0.0);
+    earthModelViewMatrix = GLKMatrix4Translate(earthModelViewMatrix, 0.0, 0.0, sqrtf(_earthR));
     earthModelViewMatrix = GLKMatrix4Rotate(earthModelViewMatrix, GLKMathDegreesToRadians(-15), 0.0, 0.0, 1.0);
     
     satelliteModelViewMatrix=earthModelViewMatrix;
     
-    earthModelViewMatrix = GLKMatrix4Rotate(earthModelViewMatrix, GLKMathDegreesToRadians( _rotation*_EarthRotation*4), 0.0, 1.0, 0.0);
+    earthModelViewMatrix = GLKMatrix4Rotate(earthModelViewMatrix, GLKMathDegreesToRadians( (_rotation)*_EarthRotation*4), 0.0, 1.0, 0.0);
     self.effect.transform.modelviewMatrix = earthModelViewMatrix;
     
     [self.effect prepareToDraw];
@@ -247,12 +250,15 @@
     [self.effect prepareToDraw];
     glBindBuffer(GL_ARRAY_BUFFER, _SatelliteVertexBuffer);
     [self execute];
-    float PlutoDegree = GLKMathDegreesToRadians(_rotation*_PlutoRotation/4);
+    float PlutoDegree = GLKMathDegreesToRadians((_rotation)*_PlutoRotation/4+90);
     // pluto must allways look at earth center...? how???
     float R = sqrtf((_plutoX*cosf(PlutoDegree)*cosf(PlutoDegree))+_plutoY*sinf(PlutoDegree)*sinf(PlutoDegree));
-    plutoModelViewMatrix = GLKMatrix4Rotate(baseMatrix, PlutoDegree, 0.0, 1.0, 0.0);
+    
+    plutoModelViewMatrix = baseMatrix;
+    
+    //plutoModelViewMatrix = GLKMatrix4Rotate(plutoModelViewMatrix, GLKMathDegreesToRadians(90), 0.0, 1.0, 0.0);
+    plutoModelViewMatrix = GLKMatrix4Rotate(plutoModelViewMatrix, PlutoDegree, 0.0, 1.0, 0.0);
     plutoModelViewMatrix = GLKMatrix4Translate(plutoModelViewMatrix, 0.0, 0.0, R);
-    //plutoModelViewMatrix = GLKMatrix4Translate(baseMatrix, 20*cosf(GLKMathDegreesToRadians(_rotation*_PlutoRotation/4)), 0.0,15*sinf(GLKMathDegreesToRadians(_rotation*_PlutoRotation/4)));
     
     self.effect.transform.modelviewMatrix = plutoModelViewMatrix;
     
@@ -278,11 +284,11 @@
     //
     ////// need to apply korean coordinate
     //
-    BaseMatrix = GLKMatrix4Rotate(BaseMatrix, GLKMathDegreesToRadians( _rotation*_EarthRotation), 0.0, -1.0, 0.0);
+    BaseMatrix = GLKMatrix4Rotate(BaseMatrix, GLKMathDegreesToRadians( (_rotation+180)*_EarthRotation), 0.0, -1.0, 0.0);
     BaseMatrix = GLKMatrix4Rotate(BaseMatrix, GLKMathDegreesToRadians(15), 0.0, 0.0, 1.0);
-    BaseMatrix = GLKMatrix4Translate(BaseMatrix, 0.0, 0.0, -10.0f);
+    BaseMatrix = GLKMatrix4Translate(BaseMatrix, 0.0, 0.0, -sqrtf(_earthR));
     
-    BaseMatrix = GLKMatrix4Rotate(BaseMatrix, GLKMathDegreesToRadians(_rotation*_EarthRotation), 0.0, -1.0, 0.0);
+    BaseMatrix = GLKMatrix4Rotate(BaseMatrix, GLKMathDegreesToRadians((_rotation+180)*_EarthRotation), 0.0, -1.0, 0.0);
     
     GLKMatrix4 projectionMatrix = GLKMatrix4MakePerspective(GLKMathDegreesToRadians(65.0f), aspect, 1.0f, 300.0f);
     
@@ -295,39 +301,30 @@
 -(void)PlutoView{
     float aspect = fabsf(self.view.bounds.size.width/self.view.bounds.size.height);
     GLKMatrix4 BaseMatrix = GLKMatrix4MakeTranslation(0.0f, 0.0f, 0.0f);
-    float PlutoDegree = (_rotation*_PlutoRotation/4);
-    float EarthDegree = (_rotation*_EarthRotation);
+    float PlutoDegree = ((_rotation)*_PlutoRotation/4+90);
+    float EarthDegree = ((_rotation)*_EarthRotation+180);
     float PlutoRadian = GLKMathDegreesToRadians(PlutoDegree);
     float EarthRadian = GLKMathDegreesToRadians(EarthDegree);
     // pluto must allways look at earth center...? how???
     float R = sqrtf((_plutoX*cosf(PlutoRadian)*cosf(PlutoRadian))+_plutoY*sinf(PlutoRadian)*sinf(PlutoRadian));
-    float r = sqrtf(100*cosf(EarthRadian)*cosf(EarthRadian)+100*sinf(EarthRadian)*sinf(EarthRadian));
-
-    //float Theta = GLKMathRadiansToDegrees( atanf((R*cosf(PlutoDegree)-r*cosf(EarthDegree))/(R*sinf(PlutoDegree)-r*sinf(EarthDegree))));
+    float r = sqrtf(_earthR*cosf(EarthRadian)*cosf(EarthRadian)+_earthR*sinf(EarthRadian)*sinf(EarthRadian));
     float x = R*cosf(PlutoRadian)-r*cosf(EarthRadian);
     float y = R*sinf(PlutoRadian)-r*sinf(EarthRadian);
     float z = sqrtf(x*x+y*y);
     float Theta =GLKMathRadiansToDegrees(asinf(y/z));
-    //if (Theta<=0) Theta*=-1;
-    if(shift && (Theta <= -89.8)){
-        shift = NO;
-    }
-    if(!shift && (Theta >= 89.8)){
-        shift = YES;
-    }
-    if (shift) {
-        Theta = 180.0 - Theta;
-    }
-    
     NSLog(@"x : %f, y : %f ,sin(P):%f  cos(P):%f Theta: %f",x, y,PlutoDegree, PlutoRadian, Theta);
-    Theta = GLKMathRadiansToDegrees(PlutoRadian) - Theta;
+    if(shift && (Theta <= -89.7))   shift = NO;
+    if(!shift && (Theta >= 89.7))   shift = YES;
+    if (shift)                      Theta = 180.0 - Theta;
     
+    
+    Theta = GLKMathRadiansToDegrees(PlutoRadian) - Theta;
+    NSLog(@"x : %f, y : %f ,sin(P):%f  cos(P):%f Theta: %f",x, y,PlutoDegree, PlutoRadian, Theta);
     BaseMatrix = GLKMatrix4Rotate(BaseMatrix,GLKMathDegreesToRadians(Theta), 0.0, 1.0, 0.0);
 
     BaseMatrix = GLKMatrix4Translate(BaseMatrix, 0.0, 0.0,-R);
     BaseMatrix = GLKMatrix4Rotate(BaseMatrix, PlutoRadian, 0.0, -1.0, 0.0);
-    //BaseMatrix = GLKMatrix4Translate(BaseMatrix, -sqrtf(_plutoY)*sinf(PlutoRadian), 0.0,-sqrtf(_plutoX)*cosf(PlutoRadian));
-    // -
+   // BaseMatrix = GLKMatrix4Rotate(BaseMatrix, GLKMathDegreesToRadians(90), 0.0, -1.0, 0.0);
     GLKMatrix4 projectionMatrix = GLKMatrix4MakePerspective(GLKMathDegreesToRadians(65.0f), aspect, 0.1f, 300.0f);
     projectionMatrix = GLKMatrix4Multiply(projectionMatrix, BaseMatrix);
     self.effect.transform.projectionMatrix = projectionMatrix;
