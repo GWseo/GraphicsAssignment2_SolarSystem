@@ -99,8 +99,8 @@
     _SatelliteRotation = 1.0;
     _SatelliteRevolution = 0.0;
     _plutoX = 90000;
-    _plutoY = 40000;
-    _earthR = 13900;
+    _plutoY = 62500;
+    _earthR = 10000;
     _sunViewR = 25.0;
     _earthViewR = 10.0;
     _satelliteViewR = 5.0;
@@ -139,7 +139,7 @@
     [EAGLContext setCurrentContext:self.context];
     stack = 10;
     slice = 10;
-    Sun     = [[Planet alloc]init:stack slices:slice radius:_sunViewR squash:0.01 ColorMode:1];
+    Sun     = [[Planet alloc]init:stack slices:slice radius:_sunViewR squash:1.0 ColorMode:1];
     Earth   = [[Planet alloc]init:stack slices:slice radius:_earthViewR squash:1.0 ColorMode:0];
     Pluto   = [[Planet alloc]init:stack slices:slice radius:_plutoViewR squash:1.0 ColorMode:3];
     Satellite  = [[Planet alloc]init:stack slices:slice radius:_satelliteViewR squash:1.0 ColorMode:2];
@@ -224,10 +224,8 @@
     glVertexAttribPointer(GLKVertexAttribColor, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)offsetof(Vertex, Color));
     glDrawArrays(GL_LINE_STRIP, 0, ((slice+1)*2*(stack-1)+2));
     
-    
     //Draw Axis
     self.effect.transform.modelviewMatrix = ModelViewMatrix;
-    
     [self.effect prepareToDraw];
     glBindBuffer(GL_ARRAY_BUFFER, _AxisVertexBuffer);
     glEnableVertexAttribArray(GLKVertexAttribPosition);
@@ -251,7 +249,6 @@
     glBindBuffer(GL_ARRAY_BUFFER, _SunVertexBuffer);
     [self execute:sunModelViewMatrix];
     earthModelViewMatrix = baseMatrix;
-    //earthModelViewMatrix = GLKMatrix4Rotate(earthModelViewMatrix, GLKMathDegreesToRadians(180), 0.0, 1.0, 0.0);
     
     earthModelViewMatrix = GLKMatrix4Rotate(earthModelViewMatrix, GLKMathDegreesToRadians((_rotation)*_EarthRotation+180), 0.0, 1.0, 0.0);
     earthModelViewMatrix = GLKMatrix4Translate(earthModelViewMatrix, 0.0, 0.0, sqrtf(_earthR));
@@ -275,13 +272,12 @@
     [self.effect prepareToDraw];
     glBindBuffer(GL_ARRAY_BUFFER, _SatelliteVertexBuffer);
     [self execute:satelliteModelViewMatrix];
-    float PlutoDegree = GLKMathDegreesToRadians((_rotation)*_PlutoRotation/3+90);
+    float PlutoDegree = GLKMathDegreesToRadians((_rotation)*_PlutoRotation/7+90);
     // pluto must allways look at earth center...? how???
     float R = sqrtf((_plutoX*cosf(PlutoDegree)*cosf(PlutoDegree))+_plutoY*sinf(PlutoDegree)*sinf(PlutoDegree));
     
     plutoModelViewMatrix = baseMatrix;
     
-    //plutoModelViewMatrix = GLKMatrix4Rotate(plutoModelViewMatrix, GLKMathDegreesToRadians(90), 0.0, 1.0, 0.0);
     plutoModelViewMatrix = GLKMatrix4Rotate(plutoModelViewMatrix, PlutoDegree, 0.0, 1.0, 0.0);
     plutoModelViewMatrix = GLKMatrix4Translate(plutoModelViewMatrix, 0.0, 0.0, R);
     plutoModelViewMatrix = GLKMatrix4Rotate(plutoModelViewMatrix, PlutoDegree*7, 0.0, 1.0, 0.0);
@@ -297,7 +293,6 @@
    
     self.effect.transform.projectionMatrix = projectionMatrix;
     [self buildUniverse];
-    
 }
 
 -(void)EarthView{
@@ -305,7 +300,6 @@
     
     //View Must be Multiply as Stack wise
     GLKMatrix4 BaseMatrix = GLKMatrix4MakeTranslation(0.0f, 0.0f, 0.0f);
-    
     
     BaseMatrix = GLKMatrix4Rotate(BaseMatrix, GLKMathDegreesToRadians( (_rotation)*_EarthRotation+180), 0.0, -1.0, 0.0);
     //
@@ -324,12 +318,11 @@
     
     self.effect.transform.projectionMatrix = projectionMatrix;
     [self buildUniverse];
-    
 }
 -(void)PlutoView{
     float aspect = fabsf(self.view.bounds.size.width/self.view.bounds.size.height);
     GLKMatrix4 BaseMatrix = GLKMatrix4MakeTranslation(0.0f, 0.0f, 0.0f);
-    float PlutoDegree = ((_rotation)*_PlutoRotation/3+90);
+    float PlutoDegree = ((_rotation)*_PlutoRotation/7+90);
     float EarthDegree = ((_rotation)*_EarthRotation+180);
     float PlutoRadian = GLKMathDegreesToRadians(PlutoDegree);
     float EarthRadian = GLKMathDegreesToRadians(EarthDegree);
@@ -341,17 +334,16 @@
     float z = sqrtf(x*x+y*y);
     float Theta =GLKMathRadiansToDegrees(asinf(y/z));
    // NSLog(@"x : %f, y : %f ,sin(P):%f  cos(P):%f Theta: %f",x, y,PlutoDegree, PlutoRadian, Theta);
-    if(shift && (Theta <= -89.7))   shift = NO;
-    if(!shift && (Theta >= 89.7))   shift = YES;
+    if(shift && (Theta <= -89.8))   shift = NO;
+    if(!shift && (Theta >= 89.8))   shift = YES;
     if (shift)                      Theta = 180.0 - Theta;
-    
+    NSLog(@"x : %f, y : %f ,sin(P):%f  cos(P):%f Theta: %f",x, y,PlutoDegree, PlutoRadian, Theta);
     Theta = GLKMathRadiansToDegrees(PlutoRadian) - Theta;
-   // NSLog(@"x : %f, y : %f ,sin(P):%f  cos(P):%f Theta: %f",x, y,PlutoDegree, PlutoRadian, Theta);
+    
     BaseMatrix = GLKMatrix4Rotate(BaseMatrix,GLKMathDegreesToRadians(Theta), 0.0, 1.0, 0.0);
 
     BaseMatrix = GLKMatrix4Translate(BaseMatrix, 0.0, 0.0,-R);
     BaseMatrix = GLKMatrix4Rotate(BaseMatrix, PlutoRadian, 0.0, -1.0, 0.0);
-   // BaseMatrix = GLKMatrix4Rotate(BaseMatrix, GLKMathDegreesToRadians(90), 0.0, -1.0, 0.0);
     GLKMatrix4 projectionMatrix = GLKMatrix4MakePerspective(GLKMathDegreesToRadians(65.0f), aspect, _plutoViewR, 1000.0f);
     projectionMatrix = GLKMatrix4Multiply(projectionMatrix, BaseMatrix);
     self.effect.transform.projectionMatrix = projectionMatrix;
@@ -376,7 +368,6 @@
     // Pass the selected object to the new view controller.
 }
 */
-
 
 - (void) touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event{
     NSLog(@"timeSinceLastUpdate: %f", self.timeSinceLastUpdate);
