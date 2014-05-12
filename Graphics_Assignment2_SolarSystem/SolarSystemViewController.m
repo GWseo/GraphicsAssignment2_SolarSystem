@@ -105,6 +105,8 @@
     _earthViewR = 10.0;
     _satelliteViewR = 5.0;
     _plutoViewR = 5.0;
+    stack = 100;
+    slice = 100;
     [self setupGL];
 }
 
@@ -137,8 +139,7 @@
 - (void)setupGL{
     NSLog(@"setupGL");
     [EAGLContext setCurrentContext:self.context];
-    stack = 10;
-    slice = 10;
+
     Sun     = [[Planet alloc]init:stack slices:slice radius:_sunViewR squash:1.0 ColorMode:1];
     Earth   = [[Planet alloc]init:stack slices:slice radius:_earthViewR squash:1.0 ColorMode:0];
     Pluto   = [[Planet alloc]init:stack slices:slice radius:_plutoViewR squash:1.0 ColorMode:3];
@@ -222,7 +223,7 @@
     glVertexAttribPointer(GLKVertexAttribPosition, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)offsetof(Vertex, Positions));
     glEnableVertexAttribArray(GLKVertexAttribColor);
     glVertexAttribPointer(GLKVertexAttribColor, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)offsetof(Vertex, Color));
-    glDrawArrays(GL_LINE_STRIP, 0, ((slice+1)*2*(stack-1)+2));
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, ((slice+1)*2*(stack-1)+2));
     
     //Draw Axis
     self.effect.transform.modelviewMatrix = ModelViewMatrix;
@@ -337,7 +338,7 @@
     if(shift && (Theta <= -89.8))   shift = NO;
     if(!shift && (Theta >= 89.8))   shift = YES;
     if (shift)                      Theta = 180.0 - Theta;
-    NSLog(@"x : %f, y : %f ,sin(P):%f  cos(P):%f Theta: %f",x, y,PlutoDegree, PlutoRadian, Theta);
+    //NSLog(@"x : %f, y : %f ,sin(P):%f  cos(P):%f Theta: %f",x, y,PlutoDegree, PlutoRadian, Theta);
     Theta = GLKMathRadiansToDegrees(PlutoRadian) - Theta;
     
     BaseMatrix = GLKMatrix4Rotate(BaseMatrix,GLKMathDegreesToRadians(Theta), 0.0, 1.0, 0.0);
