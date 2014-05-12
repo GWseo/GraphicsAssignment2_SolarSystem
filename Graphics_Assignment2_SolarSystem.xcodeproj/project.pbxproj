@@ -13,6 +13,7 @@
 		A4132699191F496000990855 /* SolarSystemViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A4132698191F496000990855 /* SolarSystemViewController.m */; };
 		A413269C191F49C700990855 /* Planet.m in Sources */ = {isa = PBXBuildFile; fileRef = A413269B191F49C700990855 /* Planet.m */; };
 		A413269E191F4A9400990855 /* SolarSystemStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A413269D191F4A9400990855 /* SolarSystemStoryboard.storyboard */; };
+		A43760EE192102CA00891A63 /* Axis.m in Sources */ = {isa = PBXBuildFile; fileRef = A43760ED192102CA00891A63 /* Axis.m */; };
 		A47AFACA191F3F3900A8ADB3 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A47AFAC9191F3F3900A8ADB3 /* Foundation.framework */; };
 		A47AFACC191F3F3900A8ADB3 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A47AFACB191F3F3900A8ADB3 /* CoreGraphics.framework */; };
 		A47AFACE191F3F3900A8ADB3 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A47AFACD191F3F3900A8ADB3 /* UIKit.framework */; };
@@ -46,6 +47,9 @@
 		A413269A191F49C700990855 /* Planet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Planet.h; sourceTree = "<group>"; };
 		A413269B191F49C700990855 /* Planet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Planet.m; sourceTree = "<group>"; };
 		A413269D191F4A9400990855 /* SolarSystemStoryboard.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = SolarSystemStoryboard.storyboard; sourceTree = "<group>"; };
+		A43760EC192102CA00891A63 /* Axis.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Axis.h; sourceTree = "<group>"; };
+		A43760ED192102CA00891A63 /* Axis.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Axis.m; sourceTree = "<group>"; };
+		A43760EF192110DD00891A63 /* Vertex.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Vertex.h; sourceTree = "<group>"; };
 		A47AFAC6191F3F3900A8ADB3 /* Graphics_Assignment2_SolarSystem.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Graphics_Assignment2_SolarSystem.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A47AFAC9191F3F3900A8ADB3 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		A47AFACB191F3F3900A8ADB3 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -131,6 +135,9 @@
 				A47AFAD9191F3F3900A8ADB3 /* SolarSystemAppDelegate.m */,
 				A4132697191F496000990855 /* SolarSystemViewController.h */,
 				A4132698191F496000990855 /* SolarSystemViewController.m */,
+				A43760EC192102CA00891A63 /* Axis.h */,
+				A43760EF192110DD00891A63 /* Vertex.h */,
+				A43760ED192102CA00891A63 /* Axis.m */,
 				A413269A191F49C700990855 /* Planet.h */,
 				A413269B191F49C700990855 /* Planet.m */,
 				A47AFADB191F3F3900A8ADB3 /* Images.xcassets */,
@@ -266,6 +273,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A43760EE192102CA00891A63 /* Axis.m in Sources */,
 				A47AFAD6191F3F3900A8ADB3 /* main.m in Sources */,
 				A47AFADA191F3F3900A8ADB3 /* SolarSystemAppDelegate.m in Sources */,
 				A4132699191F496000990855 /* SolarSystemViewController.m in Sources */,

@@ -10,16 +10,13 @@
 
 #import <OpenGLES/ES2/gl.h>
 #import <GLKit/GLKit.h>
+#import "Vertex.h"
 
-typedef struct{
-    float Positions[3];
-    float Color[4];
-}Vertex;
 
 @interface Planet : NSObject
 {
 @private
-    Vertex *m_VertexData;    
+    Vertex *m_VertexData;
     GLint m_Stacks, m_Slices;
     GLfloat m_Scale;
     GLfloat m_Squash;
@@ -27,5 +24,4 @@ typedef struct{
 
 - (Vertex *)getVertexMatrix;
 -(id)init:(GLint)stacks slices:(GLint)slices radius:(GLfloat)radius squash:(GLfloat)squash ColorMode:(int)_mode;
-
 @end

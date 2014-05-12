@@ -8,6 +8,7 @@
 
 #import <GLKit/GLKit.h>
 #import "Planet.h"
+#import "Axis.h"
 @interface SolarSystemViewController : GLKViewController
 
 @end
