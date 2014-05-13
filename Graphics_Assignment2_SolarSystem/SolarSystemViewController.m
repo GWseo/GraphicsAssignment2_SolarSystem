@@ -56,7 +56,6 @@
 
 - (IBAction)EarthSpeedScroll:(UISlider *)sender {
     _EarthRotation = [sender value];
-    NSLog(@"%f",_EarthRotation);
 }
 - (IBAction)PlutoSpeedScroll:(UISlider *)sender {
     _PlutoRotation = [sender value];
@@ -68,7 +67,6 @@
 - (IBAction)ChangeViewMode:(UIButton *)sender {
     ViewMode +=1;
     ViewMode %=5;
-    NSLog(@"ViewMode : %d",ViewMode);
 }
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -223,7 +221,7 @@
     glVertexAttribPointer(GLKVertexAttribPosition, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)offsetof(Vertex, Positions));
     glEnableVertexAttribArray(GLKVertexAttribColor);
     glVertexAttribPointer(GLKVertexAttribColor, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid*)offsetof(Vertex, Color));
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, ((slice+1)*2*(stack-1)+2));
+    glDrawArrays(GL_LINE_STRIP, 0, ((slice+1)*2*(stack-1)+2));
     
     //Draw Axis
     self.effect.transform.modelviewMatrix = ModelViewMatrix;
@@ -266,7 +264,7 @@
     
     satelliteModelViewMatrix = GLKMatrix4Rotate(satelliteModelViewMatrix,GLKMathDegreesToRadians(_SatelliteRevolution), 0.0, 0.0, 1.0);
     
-    satelliteModelViewMatrix = GLKMatrix4Rotate(satelliteModelViewMatrix, GLKMathDegreesToRadians(_rotation*_SatelliteRotation*8), 0.0, 1.0, 0.0);
+    satelliteModelViewMatrix = GLKMatrix4Rotate(satelliteModelViewMatrix, GLKMathDegreesToRadians(_rotation*_SatelliteRotation*360/25), 0.0, 1.0, 0.0);
     satelliteModelViewMatrix = GLKMatrix4Translate(satelliteModelViewMatrix, _earthViewR+10.0f, 0.0, 0.0);
     self.effect.transform.modelviewMatrix = satelliteModelViewMatrix;
     
@@ -369,7 +367,7 @@
     // Pass the selected object to the new view controller.
 }
 */
-
+/*
 - (void) touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event{
     NSLog(@"timeSinceLastUpdate: %f", self.timeSinceLastUpdate);
     NSLog(@"timeSinceLastDraw : %f", self.timeSinceLastDraw);
@@ -377,4 +375,5 @@
     NSLog(@"timeSinceLastResume : %f", self.timeSinceLastResume);
     self.paused = !self.paused;
 }
+ */
 @end
